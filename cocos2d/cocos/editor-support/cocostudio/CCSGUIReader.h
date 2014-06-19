@@ -28,10 +28,12 @@ THE SOFTWARE.
 #include "ui/UIWidget.h"
 #include "cocostudio/DictionaryHelper.h"
 #include "WidgetReader/WidgetReaderProtocol.h"
-#include "ObjectFactory.h"
+#include "base/ObjectFactory.h"
+
 
 namespace cocostudio {
 
+    
 #define kCCSVersion 1.0
     
     typedef void (cocos2d::Ref::*SEL_ParseEvent)(const std::string&, cocos2d::Ref*, const rapidjson::Value&);
@@ -57,12 +59,13 @@ public:
      */
     const cocos2d::Size getFileDesignSize(const char* fileName) const;
     
-    const std::string& getFilePath() const { return m_strFilePath; };
+    void setFilePath(const std::string& strFilePath) { m_strFilePath = strFilePath; }
+    const std::string& getFilePath() const { return m_strFilePath; }
+
     void registerTypeAndCallBack(const std::string& classType,
-                                 ObjectFactory::Instance ins,
+                                 cocos2d::ObjectFactory::Instance ins,
                                  Ref* object,
                                  SEL_ParseEvent callBack);
-    
     
 protected:
     GUIReader();
@@ -93,6 +96,10 @@ public:
                                                               const rapidjson::Value& customOptions) = 0;
 protected:
     void setAnchorPointForWidget(cocos2d::ui::Widget* widget, const rapidjson::Value&options);
+    
+    std::string getGUIClassName(const std::string& name);
+    cocos2d::ui::Widget *createGUI(const std::string& classname);
+    WidgetReaderProtocol* createWidgetReaderProtocol(const std::string& classname);
     
 protected:
     std::string m_strFilePath;
